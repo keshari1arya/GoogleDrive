@@ -5,7 +5,7 @@
 
 <h2>Index</h2>
 
-@using (Html.BeginForm("GetFile", "FIleUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("PostFile", "FIleUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.ValidationSummary();
     <ol>

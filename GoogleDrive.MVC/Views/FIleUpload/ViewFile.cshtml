@@ -1,0 +1,76 @@
+﻿@model GoogleDrive.Model.GoogleDriveFile
+
+@{
+    ViewBag.Title = "ViewFile";
+}
+
+
+
+<h3>ViewFile</h3>
+<h2>@ViewBag.Message</h2>
+<div>
+    <h4>GoogleDriveFile</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.OriginalFilename)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OriginalFilename)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ThumbnailLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ThumbnailLink)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IconLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IconLink)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.WebContentLink)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.WebContentLink)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

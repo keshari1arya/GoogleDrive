@@ -196,6 +196,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GoogleDrive.Model\GoogleDrive.Model.csproj">
+      <Project>{847E787A-C484-4951-B9C2-2CE55FD3E488}</Project>
+      <Name>GoogleDrive.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleDrive.MVC\GoogleDrive.MVC.csproj">
       <Project>{8FF4CDE6-590B-4002-87BF-1DC593635B57}</Project>
       <Name>GoogleDrive.MVC</Name>

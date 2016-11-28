@@ -1,8 +1,12 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿using Google;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
 using Google.Apis.Services;
+using GoogleDrive.Model;
 using GoogleDrive.WebApi.GoogleDrive;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,12 +23,9 @@ namespace GoogleDrive.WebApi.Controllers
 
             //Gets credentials 
             GoogleUtility googleUtility = new GoogleUtility();
-
-
             UserCredential credential = googleUtility.GetCredential();
 
             //byte array to HttpPostedFileBase
-
             HttpPostedFileBase file = new ByteArrayToHttpPostedFileBase(byteArray, fileName);
 
             var service = new DriveService(new BaseClientService.Initializer()
@@ -63,10 +64,43 @@ namespace GoogleDrive.WebApi.Controllers
             FilesResource.InsertMediaUpload requestToUpload = service.Files.Insert(body, stream, body.MimeType);
             requestToUpload.Upload();
             var response = requestToUpload.ResponseBody;
-            return Ok($"file ID: {response.Id} and Folder ID: {folderId}");
+            return Ok(response.Id);
 
         }
 
+        [HttpGet]
+        public IHttpActionResult GetFile(string fileId)
+        {
+            GoogleUtility googleUtility = new GoogleUtility();
+            UserCredential credential = googleUtility.GetCredential();
+
+            var service = new DriveService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = "DriveApiFileUpload",
+            });
+            try
+            {
+               IList< Google.Apis.Drive.v2.Data.File> files = service.Files.List().Execute().Items;
+
+                foreach (Google.Apis.Drive.v2.Data.File file in files)
+                {
+                    if (file.Id == fileId)
+                        return Ok(file);
+                }
+
+                return InternalServerError();
+            }
+            catch (GoogleApiException ex)
+            {
+                return InternalServerError(ex);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+
+        }
         public IHttpActionResult GetAllFiles()
         {
             //Gets credentials 
@@ -80,8 +114,8 @@ namespace GoogleDrive.WebApi.Controllers
             });
 
             var listRequest = service.Files.List();
-            listRequest.MaxResults = 20;
-
+            listRequest.MaxResults = 120;
+            listRequest.Q = "mimeType!='application/vnd.google-apps.folder' and trashed=false";
             IList<Google.Apis.Drive.v2.Data.File> files = listRequest.Execute().Items;
 
             if(files!=null)

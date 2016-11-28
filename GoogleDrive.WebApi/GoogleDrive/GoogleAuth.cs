@@ -20,7 +20,7 @@ namespace GoogleDrive.WebApi.GoogleDrive
                                     ClientId = "1095883481859-uqkb7r66vth2402p0dn8dpel8g2ptidm.apps.googleusercontent.com",
                                     ClientSecret = "3ZCqmmF5xfcM1_YE9NGjeUt6"
                                 },
-                                new[] { DriveService.Scope.Drive },
+                                new[] { DriveService.Scope.Drive},
                                 "user",
                                 CancellationToken.None
                         ).Result;

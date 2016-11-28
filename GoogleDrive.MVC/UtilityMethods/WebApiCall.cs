@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GoogleDrive.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,8 @@ namespace GoogleDrive.MVC.UtilityMethods
 
                 if (message.StatusCode == HttpStatusCode.OK)
                 {
+
+                    //Problem Arise Here as Some extra chareter added to id
                     string id = await message.Content.ReadAsStringAsync();
                     return id;
                 }
@@ -43,6 +46,26 @@ namespace GoogleDrive.MVC.UtilityMethods
 
         }
 
+        public async Task<GoogleDriveFile> GetFile(string fileId)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:16184/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                string url = string.Format($"api/FileToDrive/GetFile?fileId={fileId}");
+
+                HttpResponseMessage message = await client.GetAsync(url);
+
+                if (message.StatusCode == HttpStatusCode.OK)
+                {
+                    var files = JsonConvert.DeserializeObject<IList<GoogleDriveFile>>(await message.Content.ReadAsStringAsync());
+                    return files[0];
+                }
+                return null;
+            }
+        }
         public async Task<HttpResponseMessage> getAllFiles()
         {
             using (var client = new HttpClient())

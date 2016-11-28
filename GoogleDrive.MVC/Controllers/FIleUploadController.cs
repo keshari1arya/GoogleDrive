@@ -84,18 +84,20 @@ namespace GoogleDrive.MVC.Controllers
                     //var driveFile = request.ResponseBody;
                     #endregion
 
-                    //calling to api to upload file to dirve  http://localhost:16184/api/FileUpload/PostToGoogleDrive
+                    //calling to api to upload file to dirve  
+                    //http://localhost:16184/api/FileUpload/PostToGoogleDrive
                     WebApiCall call = new WebApiCall();
-                    string response = await call.PostToGoogleDrive(file);
+                    string fileId = await call.PostToGoogleDrive(file);
+
+                    GoogleDriveFile uploadedFile = await call.GetFile(fileId);
 
 
-                    ViewBag.Message = "File uploaded successfully.File id: " + response;
+                    ViewBag.Message = "File uploaded successfully";
+                    return View("ViewFile", uploadedFile);
                 }
             }
 
             return View();
-
-
         }
 
         public async Task<ActionResult> GetAllFile()
