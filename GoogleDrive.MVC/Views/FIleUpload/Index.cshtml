@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm("GetFile", "FIleUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.ValidationSummary();
+    <ol>
+        <li class="lifile">
+            <input type="file" id="fileToUpload" name="file" />
+            <span class="field-validation-error" id="spanfile"></span>
+        </li>
+    </ol>
+    <input type="submit" id="btnSubmit" value="Upload" />
+}
+

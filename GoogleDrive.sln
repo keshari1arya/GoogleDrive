@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleDrive.MVC", "GoogleDrive.MVC\GoogleDrive.MVC.csproj", "{8FF4CDE6-590B-4002-87BF-1DC593635B57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleDrive.WebApi", "GoogleDrive.WebApi\GoogleDrive.WebApi.csproj", "{09F10621-C033-4554-9F55-D432468B57B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleDrive.Model", "GoogleDrive.Model\GoogleDrive.Model.csproj", "{847E787A-C484-4951-B9C2-2CE55FD3E488}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8FF4CDE6-590B-4002-87BF-1DC593635B57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FF4CDE6-590B-4002-87BF-1DC593635B57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FF4CDE6-590B-4002-87BF-1DC593635B57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FF4CDE6-590B-4002-87BF-1DC593635B57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09F10621-C033-4554-9F55-D432468B57B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09F10621-C033-4554-9F55-D432468B57B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09F10621-C033-4554-9F55-D432468B57B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09F10621-C033-4554-9F55-D432468B57B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{847E787A-C484-4951-B9C2-2CE55FD3E488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{847E787A-C484-4951-B9C2-2CE55FD3E488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{847E787A-C484-4951-B9C2-2CE55FD3E488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{847E787A-C484-4951-B9C2-2CE55FD3E488}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
