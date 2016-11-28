@@ -110,6 +110,7 @@ namespace GoogleDrive.MVC.Controllers
 
             object files = JsonConvert.DeserializeObject<IList<GoogleDriveFile>>(result);
 
+            //return Json(files, JsonRequestBehavior.AllowGet);
             return View(files);
         }
 

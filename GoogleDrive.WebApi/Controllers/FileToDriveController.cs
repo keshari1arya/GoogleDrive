@@ -71,9 +71,7 @@ namespace GoogleDrive.WebApi.Controllers
         {
             //Gets credentials 
             GoogleUtility googleUtility = new GoogleUtility();
-
             UserCredential credential = googleUtility.GetCredential();
-
 
             var service = new DriveService(new BaseClientService.Initializer()
             {
@@ -82,12 +80,13 @@ namespace GoogleDrive.WebApi.Controllers
             });
 
             var listRequest = service.Files.List();
-            listRequest.MaxResults = 10;
+            listRequest.MaxResults = 20;
 
             IList<Google.Apis.Drive.v2.Data.File> files = listRequest.Execute().Items;
 
             if(files!=null)
             {
+                
                 return Ok(files);
             }
 
