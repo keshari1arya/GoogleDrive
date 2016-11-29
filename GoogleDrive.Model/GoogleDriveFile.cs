@@ -15,8 +15,34 @@ namespace GoogleDrive.Model
         public string ThumbnailLink { get; set; }
         public string IconLink { get; set; }
         public string WebContentLink { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime ModifiedDate { get; set; }
+        private DateTime createdDate;
+        public DateTime CreatedDate
+        {
+            get
+            {
+                var istDate = TimeZoneInfo.ConvertTimeFromUtc(this.createdDate,TimeZoneInfo.Local);
+                return istDate;
+            }
+            set
+            {
+                this.createdDate = value;
+            }
+        }
+
+        private DateTime modifiedDate;
+        public DateTime ModifiedDate
+        {
+            get
+            {
+                var istDate = TimeZoneInfo.ConvertTimeFromUtc(this.modifiedDate, TimeZoneInfo.Local);
+                return istDate;
+            }
+            set
+            {
+                this.modifiedDate = value;
+            }
+        }
+
         public GoogleDriveFileLabel Labels { get; set; }
     }
 

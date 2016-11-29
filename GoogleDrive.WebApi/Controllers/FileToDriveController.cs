@@ -81,15 +81,14 @@ namespace GoogleDrive.WebApi.Controllers
             });
             try
             {
-               IList< Google.Apis.Drive.v2.Data.File> files = service.Files.List().Execute().Items;
+                Google.Apis.Drive.v2.Data.File  file = service.Files.Get(fileId).Execute();
 
-                foreach (Google.Apis.Drive.v2.Data.File file in files)
+                if(file == null)
                 {
-                    if (file.Id == fileId)
-                        return Ok(file);
+                    return NotFound();
                 }
 
-                return InternalServerError();
+                return Ok(file);
             }
             catch (GoogleApiException ex)
             {

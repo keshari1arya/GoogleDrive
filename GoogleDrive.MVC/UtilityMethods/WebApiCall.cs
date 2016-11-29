@@ -36,10 +36,13 @@ namespace GoogleDrive.MVC.UtilityMethods
 
                 if (message.StatusCode == HttpStatusCode.OK)
                 {
-
-                    //Problem Arise Here as Some extra chareter added to id
+                    //Problem Arise Here as Some extra chareters added to id
                     string id = await message.Content.ReadAsStringAsync();
-                    return id;
+                    //Removing the slashes from both the end e.g. "\"0B2pC99R_P4taZlFPRnJEbENVbTA\""
+                    string temp = id.Substring(1);
+                    string finalId = temp.Substring(0, temp.Length - 1);
+                    //returning the exact id
+                    return finalId;
                 }
                 return message.StatusCode.ToString();
             }
@@ -60,8 +63,8 @@ namespace GoogleDrive.MVC.UtilityMethods
 
                 if (message.StatusCode == HttpStatusCode.OK)
                 {
-                    var files = JsonConvert.DeserializeObject<IList<GoogleDriveFile>>(await message.Content.ReadAsStringAsync());
-                    return files[0];
+                    var file = JsonConvert.DeserializeObject<GoogleDriveFile>(await message.Content.ReadAsStringAsync());
+                    return file;
                 }
                 return null;
             }
