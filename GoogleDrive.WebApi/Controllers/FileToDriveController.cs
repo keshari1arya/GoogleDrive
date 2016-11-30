@@ -5,11 +5,11 @@ using Google.Apis.Drive.v2.Data;
 using Google.Apis.Services;
 using GoogleDrive.Model;
 using GoogleDrive.WebApi.GoogleDrive;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 
@@ -34,7 +34,7 @@ namespace GoogleDrive.WebApi.Controllers
                 ApplicationName = "DriveApiFileUpload"
             });
 
-
+            //Folder id can be retrived from database which is user specific
             var folderId = "0B2pC99R_P4taZHdQeU9ScDJoSWs";
 
             bool folderExists = googleUtility.SearchFolder(service, folderId);
@@ -56,18 +56,15 @@ namespace GoogleDrive.WebApi.Controllers
                 Parents = new List<ParentReference>() { new ParentReference() { Id = folderId } }
             };
 
-            //byte[] byteArray = new byte[file.ContentLength];
-            //file.InputStream.Read(byteArray, 0, file.ContentLength);
-
             MemoryStream stream = new MemoryStream(byteArray);
 
             FilesResource.InsertMediaUpload requestToUpload = service.Files.Insert(body, stream, body.MimeType);
             requestToUpload.Upload();
             var response = requestToUpload.ResponseBody;
-            return Ok(response.Id);
+            GoogleDriveFile outputFile = new GoogleDriveFile(response);
+            return Ok(outputFile);
 
-        }
-
+        }        
         [HttpGet]
         public IHttpActionResult GetFile(string fileId)
         {
@@ -81,9 +78,9 @@ namespace GoogleDrive.WebApi.Controllers
             });
             try
             {
-                Google.Apis.Drive.v2.Data.File  file = service.Files.Get(fileId).Execute();
+                Google.Apis.Drive.v2.Data.File file = service.Files.Get(fileId).Execute();
 
-                if(file == null)
+                if (file == null)
                 {
                     return NotFound();
                 }
@@ -100,6 +97,7 @@ namespace GoogleDrive.WebApi.Controllers
             }
 
         }
+        [HttpGet]
         public IHttpActionResult GetAllFiles()
         {
             //Gets credentials 
@@ -117,13 +115,73 @@ namespace GoogleDrive.WebApi.Controllers
             listRequest.Q = "mimeType!='application/vnd.google-apps.folder' and trashed=false";
             IList<Google.Apis.Drive.v2.Data.File> files = listRequest.Execute().Items;
 
-            if(files!=null)
+            if (files != null)
             {
-                
+
                 return Ok(files);
             }
 
             return InternalServerError();
+        }
+        [HttpDelete]
+        [Route("api/FileToDrive/Delete/{id}")]
+        public IHttpActionResult DeleteFile(string id)
+        {
+            try
+            {
+                GoogleUtility utility = new GoogleUtility();
+                var credential = utility.GetCredential();
+                DriveService service = new DriveService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = "DriveApiFileUpload"
+                });
+                var value= service.Files.Delete(id).Execute();
+                
+                return Ok(value);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
+        }
+        [HttpPut]
+        public IHttpActionResult Put(string fileId, string Title, string OriginalFileName, string Description)
+        {
+            try
+            {
+                GoogleUtility utility = new GoogleUtility();
+                var credential = utility.GetCredential();
+                var service = new DriveService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = "DriveApiFileUpload"
+                });
+
+                Google.Apis.Drive.v2.Data.File fileMetaData = service.Files.Get(fileId).Execute();
+                HttpWebRequest fileRequest = (HttpWebRequest)WebRequest.Create(fileMetaData.WebContentLink);
+                HttpWebResponse response = (HttpWebResponse)fileRequest.GetResponse();
+                var responseStream = response.GetResponseStream();
+
+                // File's new content.
+                //byte[] byteArray = System.IO.File.ReadAllBytes(responseStream);
+                //System.IO.MemoryStream stream = new System.IO.MemoryStream(byteArray);
+
+                Google.Apis.Drive.v2.Data.File GoogleFile = new Google.Apis.Drive.v2.Data.File
+                {
+                    Id = fileId,
+                    Title = Title,
+                    Description = Description,
+                };
+                FilesResource.UpdateMediaUpload request = service.Files.Update(GoogleFile, fileId, responseStream, "image/jpeg");
+                request.Upload();
+                Google.Apis.Drive.v2.Data.File updatedFile = request.ResponseBody;
+                return Ok(updatedFile);
+            }
+            catch (Exception ex)
+            {
+                return InternalServerError(ex);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using GoogleDrive.Model;
+﻿using Google.Apis.Drive.v2.Data;
+using GoogleDrive.Model;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace GoogleDrive.MVC.UtilityMethods
 {
     public class WebApiCall
     {
-        public async Task<string> PostToGoogleDrive(HttpPostedFileBase file)
+        public async Task<GoogleDriveFile> PostToGoogleDrive(HttpPostedFileBase file)
         {
 
             using (var client = new HttpClient())
@@ -37,14 +38,14 @@ namespace GoogleDrive.MVC.UtilityMethods
                 if (message.StatusCode == HttpStatusCode.OK)
                 {
                     //Problem Arise Here as Some extra chareters added to id
-                    string id = await message.Content.ReadAsStringAsync();
+                    string responseContent = await message.Content.ReadAsStringAsync();
                     //Removing the slashes from both the end e.g. "\"0B2pC99R_P4taZlFPRnJEbENVbTA\""
-                    string temp = id.Substring(1);
-                    string finalId = temp.Substring(0, temp.Length - 1);
-                    //returning the exact id
-                    return finalId;
+
+                    GoogleDriveFile uploadedFile = JsonConvert.DeserializeObject<GoogleDriveFile>(responseContent);
+
+                    return uploadedFile;
                 }
-                return message.StatusCode.ToString();
+                return null;
             }
 
         }
@@ -69,7 +70,7 @@ namespace GoogleDrive.MVC.UtilityMethods
                 return null;
             }
         }
-        public async Task<HttpResponseMessage> getAllFiles()
+        public async Task<HttpResponseMessage> GetAllFiles()
         {
             using (var client = new HttpClient())
             {
@@ -86,5 +87,43 @@ namespace GoogleDrive.MVC.UtilityMethods
                 return null;
             }
         }
+
+        public async Task<string> DeleteFile(string fileId)
+        {
+            using (var Client = new HttpClient())
+            {
+                Client.BaseAddress = new Uri("http://localhost:16184/");
+                Client.DefaultRequestHeaders.Accept.Clear();
+                Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                var result = Client.DeleteAsync($"api/FileToDrive/Delete/{fileId}").Result;
+                if (result.StatusCode == HttpStatusCode.OK)
+                    return "deleted";
+                else if (result.StatusCode == HttpStatusCode.InternalServerError)
+                    return "internal server error";
+
+                return "error";
+            }
+        }
+        public async Task<string> EditFile(string fileId, string Title, string OriginalFileName, string Description)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:16184/");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                HttpResponseMessage message =
+                    await client.PostAsync($"api/EditFile/SaveEdited/{fileId}/{Description}/{OriginalFileName}/{Title}", null);
+
+                if (message.StatusCode == HttpStatusCode.OK)
+                {
+                    return "success";
+                }
+                return null;
+            }
+        }
     }
 }
+
+//String fileId, String newTitle,
+//      String newDescription, String newMimeType, String newFilename

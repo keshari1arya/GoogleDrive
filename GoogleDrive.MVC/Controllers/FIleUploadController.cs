@@ -87,24 +87,39 @@ namespace GoogleDrive.MVC.Controllers
                     //calling to api to upload file to dirve  
                     //http://localhost:16184/api/FileUpload/PostToGoogleDrive
                     WebApiCall call = new WebApiCall();
-                    string fileId = await call.PostToGoogleDrive(file);
+                    //string fileId = await call.PostToGoogleDrive(file);
 
-                    GoogleDriveFile uploadedFile = await call.GetFile(fileId);
+                    GoogleDriveFile uploadedFile = await call.PostToGoogleDrive(file);
 
-
-                    ViewBag.Message = "File uploaded successfully";
-                    return View("ViewFile", uploadedFile);
+                    if (uploadedFile != null)
+                    {
+                        ViewBag.Message = "File uploaded successfully";
+                        return View("ViewFile", uploadedFile);
+                    }
+                    else
+                    {
+                        ViewBag.Message = "Failed to upload";
+                    }
                 }
             }
 
             return View();
+        }
+        public async Task<ActionResult> GetFile(string id)
+        {
+
+            //check for null to fileId
+
+            WebApiCall call = new UtilityMethods.WebApiCall();
+            var file = await call.GetFile(id);
+            return View("ViewFile", file);
         }
 
         public async Task<ActionResult> GetAllFile()
         {
             WebApiCall call = new WebApiCall();
 
-            var message = await call.getAllFiles();
+            var message = await call.GetAllFiles();
 
             string result = await message.Content.ReadAsStringAsync();
 
@@ -114,6 +129,44 @@ namespace GoogleDrive.MVC.Controllers
 
             //return Json(files, JsonRequestBehavior.AllowGet);
             return View(files);
+        }
+        [HttpGet]
+        public async Task<ActionResult> EditFile(string fileId)
+        {
+            WebApiCall call = new WebApiCall();
+            TempData["id"] = fileId;
+            return View(await call.GetFile(fileId));
+
+        }
+        [HttpPost]
+        public async Task<ActionResult> EditFile(string Title, string OriginalFileName, string Description)
+        {
+
+            WebApiCall call = new WebApiCall();
+            if (TempData["id"] != null)
+            {
+                var message = await call.EditFile(TempData["id"].ToString(), Title, OriginalFileName, Description);
+                if (message == "success")
+                    ViewBag.Message = "Saved Successfully";
+                else
+                    ViewBag.Message = "Error in editing";
+            }
+            return View("Index");
+        }
+
+        public async Task<ActionResult> Delete(string id)
+        {
+            WebApiCall call = new WebApiCall();
+                string result = await call.DeleteFile(id);
+                if (result.Equals("deleted", StringComparison.Ordinal))
+                {
+                    ViewBag.Message = "File deleted successfully";
+
+                }
+                else if (result.Equals("error", StringComparison.Ordinal))
+                    ViewBag.Message = "Error in deleting";
+            
+            return View("Index");
         }
 
         public async Task<string> FileName(HttpPostedFileBase file)

@@ -25,7 +25,7 @@
             @Html.DisplayNameFor(model => model.ThumbnailLink)
         </dt>
         <dd>
-            <img src="@Model.ThumbnailLink" height="100" width="100" alt="@Model.IconLink" />
+            <img src="@Model.ThumbnailLink" height="50" width="50" alt="@Model.IconLink" />
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.IconLink)
@@ -37,7 +37,7 @@
             @Html.DisplayNameFor(model => model.WebContentLink)
         </dt>
         <dd>
-            <img src="@Model.WebContentLink" height="50" width="50" />
+            <img src="@Model.WebContentLink" height="150" width="150" />
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.CreatedDate)
@@ -55,5 +55,5 @@
 </div>
 <p>
     @*@Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |*@
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("View All", "GetAllFile")
 </p>
